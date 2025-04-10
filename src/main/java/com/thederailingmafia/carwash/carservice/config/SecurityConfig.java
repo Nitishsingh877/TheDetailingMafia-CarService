@@ -23,6 +23,7 @@ public class SecurityConfig {
                 .csrf(a -> a.disable())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(authorizeRequests -> authorizeRequests.requestMatchers("/api/cars/health").permitAll())
+                .authorizeHttpRequests(a-> a.requestMatchers("/api/cars/add","/api/cars/{id}","/api/cars/all/").hasRole("CUSTOMER"))
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(
                                 "/swagger-ui/**",

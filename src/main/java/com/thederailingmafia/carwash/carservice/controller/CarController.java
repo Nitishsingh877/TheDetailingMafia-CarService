@@ -9,6 +9,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
@@ -28,8 +29,10 @@ public class CarController {
         return "OK";
     }
 
+
     @PostMapping("/add")
     @Operation(summary = "Add a new car")
+    @PreAuthorize("hasAuthority('CUSTOMER')")
     public ResponseEntity<Car> addCar(@RequestBody CarRequest request) throws UserNotFoundException {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         String userEmail = auth.getName();
@@ -40,6 +43,7 @@ public class CarController {
 
     @GetMapping("/{id}")
     @Operation(summary ="Get car Details")
+    @PreAuthorize("hasAuthority('CUSTOMER')")
     public ResponseEntity<Car> getCar(@PathVariable Long id) throws CarNotFoundException {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         String userEmail = auth.getName();
@@ -48,6 +52,7 @@ public class CarController {
     }
 
     @GetMapping("/all/{id}")
+    @PreAuthorize("hasAuthority('CUSTOMER')")
     public List<Car> getAllCars(@PathVariable Long id) throws CarNotFoundException, UserNotFoundException {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         String userEmail = auth.getName();
@@ -59,6 +64,7 @@ public class CarController {
 
     @PutMapping("/{id}")
     @Operation(summary = "Update car Details")
+    @PreAuthorize("hasAuthority('CUSTOMER')")
     public ResponseEntity<Car> updateCar(@PathVariable Long id, @RequestBody CarRequest request) throws UserNotFoundException {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         String userEmail = auth.getName();
