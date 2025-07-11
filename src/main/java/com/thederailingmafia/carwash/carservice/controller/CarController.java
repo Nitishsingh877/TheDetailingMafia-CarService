@@ -31,7 +31,7 @@ public class CarController {
 
 
     @PostMapping("/add")
-    @Operation(summary = "Add a new car")
+    @Operation(summary = "Add a new car", description = "add a car")
     @PreAuthorize("hasAuthority('CUSTOMER')")
     public ResponseEntity<Car> addCar(@RequestBody CarRequest request) throws UserNotFoundException {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
@@ -51,15 +51,16 @@ public class CarController {
         return ResponseEntity.status(200).body(response);
     }
 
-    @GetMapping("/all/{id}")
+    @GetMapping("/all")
     @PreAuthorize("hasAuthority('CUSTOMER')")
-    public List<Car> getAllCars(@PathVariable Long id) throws CarNotFoundException, UserNotFoundException {
+    public List<Car> getAllCars() throws CarNotFoundException, UserNotFoundException {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         String userEmail = auth.getName();
-        List<Car> cars = carService.getAllCars(id);
-        return carService.getAllCars(id);
-
-
+        List<Car> cars = carService.getAllCars(userEmail);
+        if(cars.isEmpty()){
+            throw new CarNotFoundException("No Cars Found for this User");
+        }
+        return cars;
     }
 
     @PutMapping("/{id}")
