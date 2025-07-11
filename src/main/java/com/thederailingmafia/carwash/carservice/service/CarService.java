@@ -34,9 +34,6 @@ public class CarService {
         car.setCustomer(customer);
 
         return carRepository.save(car);
-
-
-
     }
 
     public Car getCar(Long carId, String userEmail) throws CarNotFoundException {
@@ -46,11 +43,12 @@ public class CarService {
         return car;
     }
 
-    public List<Car> getAllCars(Long customerId) throws UserNotFoundException {
-        Car car = carRepository.findAllByCustomer_CustomerId(customerId)
-                .stream().filter(c -> c.getCustomer().getCustomerId().equals(customerId))
-                .findAny().orElseThrow(() -> new UserNotFoundException("user not found"));
-        return carRepository.findAllByCustomer_CustomerId(customerId);
+    public List<Car> getAllCars(String email) throws UserNotFoundException {
+       List<Car> cars = carRepository.findByUserEmail(email);
+       if(cars.isEmpty()){
+           throw new UserNotFoundException("User not found");
+       }
+       return cars;
     }
 
     public Car updateCar(Long id, CarRequest request, String userEmail) throws UserNotFoundException {
